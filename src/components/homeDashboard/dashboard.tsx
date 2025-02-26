@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Draggable } from "../../draggable";
@@ -8,8 +8,9 @@ import Form from "../forms/form";
 import { v4 as uuidv4 } from "uuid";
 
 const HomeDashboard = () => {
-  const [tasks, setTasks] = useState<ITask[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [editTaskId, setEditTaskId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<ITask | null>(null);
 
   const [columns, setColumns] = useState({
     todo: { title: "To Do", items: [] as ITask[] },
@@ -18,6 +19,7 @@ const HomeDashboard = () => {
     completed: { title: "Completed", items: [] as ITask[] },
   });
 
+  // Add or Edit Task Function
   const handleAddTask = (
     title: string,
     description: string,
@@ -25,7 +27,7 @@ const HomeDashboard = () => {
     priority: string
   ) => {
     const newTask: ITask = {
-      id: uuidv4(), // Unique ID
+      id: editTaskId || uuidv4(),
       title,
       description,
       deadline,
@@ -33,19 +35,56 @@ const HomeDashboard = () => {
       tags: [],
     };
 
-    setTasks([...tasks, newTask]);
+    setColumns((prevColumns) => {
+      const updatedColumns = { ...prevColumns };
 
-    setColumns((prevColumns) => ({
-      ...prevColumns,
-      todo: {
-        ...prevColumns.todo,
-        items: [...prevColumns.todo.items, newTask],
-      },
-    }));
+      if (editTaskId) {
+        // Edit existing task
+        Object.keys(updatedColumns).forEach((columnKey) => {
+          updatedColumns[columnKey as keyof typeof updatedColumns].items =
+            updatedColumns[columnKey as keyof typeof updatedColumns].items.map(
+              (task) =>
+                task.id === editTaskId ? { ...task, ...newTask } : task
+            );
+        });
+      } else {
+        // Add a new task
+        updatedColumns.todo.items = [...updatedColumns.todo.items, newTask];
+      }
 
+      return updatedColumns;
+    });
+
+    setEditTaskId(null);
+    setFormData(null);
     setShowForm(false);
   };
 
+  // Edit Task Function
+  const handleEditTask = (task: ITask) => {
+     console.log("Editing task:", task);
+    setEditTaskId(task.id);
+    setFormData(task); // Store existing task data
+    setShowForm(true);
+  };
+
+  // Delete Task Function
+  const handleDeleteTask = (taskId: string) => {
+    console.log("Deleting task with ID:", taskId); // Check the task ID
+    setColumns((prevColumns) => {
+      const updatedColumns = { ...prevColumns };
+      Object.keys(updatedColumns).forEach((columnKey) => {
+        updatedColumns[columnKey as keyof typeof updatedColumns].items =
+          updatedColumns[columnKey as keyof typeof updatedColumns].items.filter(
+            (task) => task.id !== taskId
+          );
+      });
+      console.log("Updated columns:", updatedColumns); // Check the state after deletion
+      return updatedColumns;
+    });
+  };
+
+  // Handle Drag and Drop
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     if (!over) return;
@@ -60,13 +99,12 @@ const HomeDashboard = () => {
 
     if (!sourceColumnKey || !destinationColumnKey) return;
 
-    // If moving within the same column (sorting)
     if (sourceColumnKey === destinationColumnKey) {
       const columnTasks = [...columns[sourceColumnKey].items];
       const oldIndex = columnTasks.findIndex((task) => task.id === active.id);
       const newIndex = columnTasks.findIndex((task) => task.id === over.id);
 
-      if (oldIndex !== newIndex) {
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
         setColumns((prevColumns) => ({
           ...prevColumns,
           [sourceColumnKey]: {
@@ -78,7 +116,6 @@ const HomeDashboard = () => {
       return;
     }
 
-    // If moving to another column
     const taskToMove = columns[sourceColumnKey].items.find(
       (task) => task.id === active.id
     );
@@ -104,13 +141,25 @@ const HomeDashboard = () => {
       <h1>Task Management</h1>
 
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => {
+          setShowForm(true);
+          setEditTaskId(null);
+          setFormData(null);
+        }}
         className="h-[40px] w-[120px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-orange-500 hover:ring-2"
       >
         Add Task
       </button>
 
-      {showForm && <Form onSubmit={handleAddTask} />}
+      {showForm && (
+        <Form
+          onSubmit={handleAddTask}
+          initialTitle={formData?.title || ""}
+          initialDescription={formData?.description || ""}
+          initialDeadline={formData?.deadline || ""}
+          initialPriority={formData?.priority || ""}
+        />
+      )}
 
       <div className="flex gap-4">
         {Object.keys(columns).map((columnKey) => {
@@ -118,24 +167,50 @@ const HomeDashboard = () => {
 
           return (
             <Droppable key={columnKey} id={columnKey}>
-              <div className=" h-[500px] w-[250px] p-2 border rounded-md">
+              <div className="h-[300px] w-[230px] p-2 border rounded-md">
                 <h3 className="font-bold">{column.title}</h3>
 
                 <SortableContext items={column.items.map((task) => task.id)}>
                   <ul className="task-list mt-4">
                     {column.items.map((task) => (
-                      <Draggable key={task.id} id={task.id}>
-                        <li className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10">
-                          <h2 className="font-semibold">{task.title}</h2>
-                          <p>{task.description}</p>
-                          <p className="text-sm text-gray-500">
-                            {task.priority}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {task.deadline}
-                          </p>
-                        </li>
-                      </Draggable>
+                      <li
+                        key={task.id}
+                        className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10"
+                      >
+                        <Draggable id={task.id}>
+                          <div>
+                            <h2 className="font-semibold">{task.title}</h2>
+                            <p>{task.description}</p>
+                            <p className="text-sm text-gray-500">
+                              {task.priority}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {task.deadline}
+                            </p>
+                          </div>
+                        </Draggable>
+
+                        {/* Fix: Click handlers should work properly now */}
+                        <button
+                          onClick={() => {
+                            console.log("Edit task clicked", task.id); // Log the task ID
+                            handleEditTask(task);
+                          }}
+                          className="text-blue-500 hover:underline"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            console.log("Delete task clicked", task.id); // Log the task ID
+                            handleDeleteTask(task.id);
+                          }}
+                          className="text-red-500 hover:underline ml-2"
+                        >
+                          Delete
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 </SortableContext>
