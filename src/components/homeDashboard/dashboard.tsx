@@ -62,7 +62,7 @@ const HomeDashboard = () => {
 
   // Edit Task Function
   const handleEditTask = (task: ITask) => {
-     console.log("Editing task:", task);
+    console.log("Editing task:", task);
     setEditTaskId(task.id);
     setFormData(task); // Store existing task data
     setShowForm(true);
@@ -83,6 +83,19 @@ const HomeDashboard = () => {
       return updatedColumns;
     });
   };
+
+  // Load tasks from localStorage when the component mounts
+  useEffect(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      setColumns(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(columns));
+  }, [columns]);
 
   // Handle Drag and Drop
   const handleDragEnd = (event: any) => {

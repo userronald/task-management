@@ -2,7 +2,7 @@ import { RouteObject } from "react-router-dom";
 import Mainlayout from "../layouts/layout";
 import HomeDashboard from "../homeDashboard/dashboard";
 import Project from "../projects/project";
-import Task from "../tasks/task";
+import TaskBoard from "../tasks/task";
 
 const routes: RouteObject[] = [
   {
@@ -19,7 +19,7 @@ const routes: RouteObject[] = [
       },
       {
         path: "/tasks",
-        element: <Task />,
+        element: <TaskBoard />,
       },
     ],
   },
