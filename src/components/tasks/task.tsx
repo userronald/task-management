@@ -6,12 +6,14 @@ import { Droppable } from "../../droppable";
 import { ITask } from "../../types";
 import Form from "../forms/form";
 import { v4 as uuidv4 } from "uuid";
-import Modal from "react-modal";
+import Modal from "../../modal";
+
 
 const TaskBoard = () => {
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [formData, setFormData] = useState<ITask | null>(null);
+  const [openTaskDetail, setOpenTaskDetail]=useState<ITask |null>(null);
 
   const [columns, setColumns] = useState({
     todo: { title: "To Do", items: [] as ITask[] },
@@ -85,6 +87,15 @@ const TaskBoard = () => {
     });
   };
 
+  // open the tasks in modal popup
+
+  const viewTask=(task:ITask)=>{
+    console.log("Editing Task :",task);
+    setOpenTaskDetail(task);
+    
+  }
+  
+
   // Load tasks from localStorage when the component mounts
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
@@ -97,14 +108,6 @@ const TaskBoard = () => {
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(columns));
   }, [columns]);
-
-  // open the tasks in modal popup
-
-  const [selectedTask, setSelectedTask]  = useState<ITask | null>(null);
-    const openTaskDetails = (task:ITask)=>{
-      console.log("Opening Task:", task)
-      setSelectedTask(task);
-    }
 
   // Handle Drag and Drop
   const handleDragEnd = (event: any) => {
@@ -158,7 +161,6 @@ const TaskBoard = () => {
     }));
   };
 
-
   return (
     <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
       <h1>Task Management</h1>
@@ -198,11 +200,11 @@ const TaskBoard = () => {
                     {column.items.map((task) => (
                       <li
                         key={task.id}
-                        className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10 w-[200px]
-"
+                        className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10 w-[200px]"
+                        onClick={() => viewTask(task)}
                       >
                         <Draggable id={task.id}>
-                          <div onClick={() => openTaskDetails(task)}>
+                          <div>
                             <h2 className="font-semibold">{task.title}</h2>
                             <p className="truncate w-full block overflow-hidden whitespace-nowrap text-ellipsis">
                               {task.description}
@@ -244,26 +246,10 @@ const TaskBoard = () => {
             </Droppable>
           );
         })}
-        {/* <Modal
-          isOpen={!!selectedTask}
-          onRequestClose={() => setSelectedTask(null)}
-          contentLabel="Task Details"
-          style={{
-            overlay: { backgroundColor: "orange" },
-            content: { width: "400px", margin: "auto", padding: "20px" },
-          }}
-        >
-          {selectedTask && (
-            <>
-              <h2>{selectedTask.title}</h2>
-              <p>{selectedTask.description}</p>
-              <p>Priority:{selectedTask.priority}</p>
-              <p>Deadline:{selectedTask.deadline}</p>
-              <button onClick={() => setSelectedTask(null)}>Close</button>
-            </>
-          )}
-        </Modal> */}
       </div>
+      {openTaskDetail && (
+        <Modal task={openTaskDetail} onClose={() => setOpenTaskDetail(null)} />
+      )}
     </DndContext>
   );
 };
