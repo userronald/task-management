@@ -11,7 +11,7 @@ const Modal = ({ task ,onClose}:ModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <div className="cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-orange-500 hover:ring-2 p-6  shadow-lg max-w-sm w-full">
         <h2 className="text-xl font-bold">{task.title}</h2>
         <p className="mt-2">{task.description}</p>
         <p className="mt-2 text-sm text-gray-500">Priority: {task.priority}</p>
@@ -20,7 +20,7 @@ const Modal = ({ task ,onClose}:ModalProps) => {
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
           onClick={onClose}
         >
-          Close
+          Closeed
         </button>
       </div>
     </div>

@@ -13,7 +13,7 @@ const TaskBoard = () => {
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [formData, setFormData] = useState<ITask | null>(null);
-  const [openTaskDetail, setOpenTaskDetail]=useState<ITask |null>(null);
+  const [openTaskDetail, setOpenTaskDetail] = useState<ITask | null>(null);
 
   const [columns, setColumns] = useState({
     todo: { title: "To Do", items: [] as ITask[] },
@@ -71,6 +71,12 @@ const TaskBoard = () => {
     setShowForm(true);
   };
 
+  // open the tasks in modal popup
+  const viewTask = (task: ITask) => {
+    console.log("Opening Task Modal :", task);
+    setOpenTaskDetail(task);
+  };
+
   // Delete Task Function
   const handleDeleteTask = (taskId: string) => {
     console.log("Deleting task with ID:", taskId); // Check the task ID
@@ -86,15 +92,6 @@ const TaskBoard = () => {
       return updatedColumns;
     });
   };
-
-  // open the tasks in modal popup
-
-  const viewTask=(task:ITask)=>{
-    console.log("Editing Task :",task);
-    setOpenTaskDetail(task);
-    
-  }
-  
 
   // Load tasks from localStorage when the component mounts
   useEffect(() => {
