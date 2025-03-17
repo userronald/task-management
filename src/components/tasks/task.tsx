@@ -164,6 +164,7 @@ const TaskBoard = () => {
 
       <button
         onClick={() => {
+         
           setShowForm(true);
           setEditTaskId(null);
           setFormData(null);
@@ -217,7 +218,8 @@ const TaskBoard = () => {
 
                         {/* Fix: Click handlers should work properly now */}
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation(); // stops triggering the modal popup while clicking this edit button
                             console.log("Edit task clicked", task.id); // Log the task ID
                             handleEditTask(task);
                           }}
@@ -227,7 +229,8 @@ const TaskBoard = () => {
                         </button>
 
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation(); // stops triggering the modal popup when this delete button is clicked
                             console.log("Delete task clicked", task.id); // Log the task ID
                             handleDeleteTask(task.id);
                           }}
