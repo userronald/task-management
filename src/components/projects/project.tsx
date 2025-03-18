@@ -33,7 +33,8 @@ const Project= () => {
       members,
 
       tags: [],
-      deadline: ""
+      deadline: "",
+      status: ""
     };
 
     setProjects((prevProjects) => {

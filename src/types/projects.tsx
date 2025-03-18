@@ -1,4 +1,5 @@
 export type ITaskProjects = {
+  status: string;
   id: string;
   projectTitle: string;
   requirements: string;
