@@ -1,4 +1,4 @@
-import { IoPersonOutline,IoChevronDown,IoSearchOutline,IoShareSocialOutline, IoSettingsOutline, IoNotificationsOutline } from "react-icons/io5";
+// import { IoPersonOutline,IoChevronDown,IoSearchOutline,IoShareSocialOutline, IoSettingsOutline, IoNotificationsOutline } from "react-icons/io5";
 
 
 
@@ -13,40 +13,15 @@ const Navbar =({isOpen}:NavbarProps)=>{
     return (
       <>
         <div
-          className={`fixed flex items-center pl-2 pr-6 h-[70px] top-0 transition-all duration-300 ${
+          className={`fixed flex items-center justify-between px-4 md:px-6 h-[70px] top-0 transition-all duration-300 bg-gray-900 w-full border-b border-orange-300 ${
             isOpen
-              ? "md:w-[calc(100%-230px)] left-[230px]"
-              : "md:w-[calc(100%-60px)] left-[60px]"
-          } w-[calc(100%-60px)] border-b border-slate-300`}
+              ? "md:w-[calc(100%-230px)] md:left-[230px]"
+              : "md:w-[calc(100%-60px)] md:left-[60px]"
+          }`}
         >
-          <div className="flex items-center gap-3 cursor-pointer">
-            <IoPersonOutline />
-            <span className="text-red-400 font-semibold  md:text-lg text-sm whitespace-nowrap">
-              Dashboard Names
-            </span>
-            <IoChevronDown />
-          </div>
-
-          <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-[10px]">
-            <IoSearchOutline color={"orange"} />
-            <input
-              type="text"
-              placeholder="Search"
-              className=" place-items-center bg-gray-100 outline-none text-[15px]"
-            />
-          </div>
-
-          <div className="md:flex hidden items-center gap-4">
-            <div className="grid place-items-center bg-gray-100 rounded-lg px-3 py-[10px]">
-              <IoShareSocialOutline />
-            </div>
-            <div className="grid place-items-center bg-gray-100 rounded-lg px-3 py-[10px]">
-              <IoSettingsOutline />
-            </div>
-            <div className="grid place-items-center bg-gray-100 rounded-lg px-3 py-[10px]">
-              <IoNotificationsOutline />
-            </div>
-          </div>
+          <h1 className="text-xl md:text-2xl font-semibold tracking-wide text-gray-200 text-center flex-grow">
+            Your Control Hub | Where Tasks Meet Efficiency
+          </h1>
         </div>
       </>
     );

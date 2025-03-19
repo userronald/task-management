@@ -94,38 +94,41 @@ const HomeDashboard = () => {
 
   return (
     <>
-      <h1>Welcoome to ITask</h1>
-      <p>A Web Application tool to create and manage tasks... </p>
-
       <div className="p-8 flex flex-col items-center space-y-6">
-        <h1 className="text-3xl font-bold">Welcome to Your Dashboard</h1>
-        <div className="grid grid-cols-2 gap-6">
-          {/* Tasks Card */}
-          <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg w-64">
-            <h2 className="text-xl font-semibold">Tasks</h2>
-            <p className="mt-2">Manage your tasks efficiently.</p>
-            <p className="mt-2"> Pending: {pendingTasks}</p>
-            <p className="mt-1"> In Progress: {inProgressTasks}</p>
-            <p className="mt-1"> Completed: {completedTasks}</p>
-            <p className="mt-1"> Review: {reviewTasks}</p>
-            <button className="mt-4 px-4 py-2 bg-blue-500 rounded">
-              Go to Tasks
-            </button>
-          </div>
+        <h1 className="text-3xl font-bold text-white text-center mb-6">
+          Welcome to ITask
+        </h1>
+        <p className="text-lg text-gray-300 text-center mb-8">
+          Track your tasks & projects seamlessly. Stay organized, stay ahead!
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  {/* Tasks Card */}
+  <div className="p-6 bg-gray-900 text-white rounded-xl shadow-lg transform hover:scale-105 transition duration-300 w-72">
+    <h2 className="text-2xl font-semibold text-blue-400">Tasks </h2>
+    <p className="mt-2 text-gray-300">Manage your tasks efficiently.</p>
+    <div className="mt-4 space-y-1 text-gray-200">
+      <p> To-Do: <span className="font-bold text-yellow-400">{pendingTasks}</span></p>
+      <p> In Progress: <span className="font-bold text-blue-400">{inProgressTasks}</span></p>
+      <p> Completed: <span className="font-bold text-green-400">{completedTasks}</span></p>
+      <p> Review: <span className="font-bold text-purple-400">{reviewTasks}</span></p>
+    </div>
+    
+  </div>
 
-          {/* Projects Card */}
-          <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg w-64">
-            <h2 className="text-xl font-semibold">Projects</h2>
-            <p className="mt-2">Track your projects easily.</p>
-            <p className="mt-2"> Pending: {pendingProjects}</p>
-            <p className="mt-1"> In Progress: {inProgressProjects}</p>
-            <p className="mt-1"> Completed: {completedProjects}</p>
-            <p className="mt-1"> Review: {reviewProjects}</p>
-            <button className="mt-4 px-4 py-2 bg-green-500 rounded">
-              Go to Projects
-            </button>
-          </div>
-        </div>
+  {/* Projects Card */}
+  <div className="p-6 bg-gray-900 text-white rounded-xl shadow-lg transform hover:scale-105 transition duration-300 w-72">
+    <h2 className="text-2xl font-semibold text-green-400">Projects </h2>
+    <p className="mt-2 text-gray-300">Track your projects easily.</p>
+    <div className="mt-4 space-y-1 text-gray-200">
+      <p>To-Do: <span className="font-bold text-yellow-400">{pendingProjects}</span></p>
+      <p>In Progress: <span className="font-bold text-blue-400">{inProgressProjects}</span></p>
+      <p>Completed: <span className="font-bold text-green-400">{completedProjects}</span></p>
+      <p>Review: <span className="font-bold text-purple-400">{reviewProjects}</span></p>
+    </div>
+    
+  </div>
+</div>
+
       </div>
     </>
   );

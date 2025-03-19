@@ -21,16 +21,16 @@ const SideBar = ({ isOpen, toggleSidebar }: SidebarProps) => {
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full flex flex-col transition-all duration-300 bg-black ${
+      className={`fixed inset-y-0 left-0 flex flex-col transition-all duration-300 bg-gray-900  ${
         isOpen ? "md:w-[230px]" : "md:w-[60px]"
       } w-[60px] md:translate-x-0 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       {/* Sidebar Header with Hamburger */}
-      <div className="w-full flex items-center px-4 h-[70px] bg-black">
+      <div className="w-full flex items-center px-4 h-[70px]">
         <button
-          className="p-2 bg-gray-800 text-white rounded-md"
+          className="p-2 bg-gray-600 text-white rounded-md"
           onClick={toggleSidebar}
         >
           <IoMenu size={24} />
@@ -50,7 +50,7 @@ const SideBar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       </div>
 
       {/* Sidebar Navigation */}
-      <div className="w-full h-[calc(100vh-70px)] flex flex-col items-center md:items-start gap-2 border-slate bg-black py-5 px-3 relative">
+      <div className="w-full h-[calc(100vh-70px)] flex flex-col items-center md:items-start gap-2 border-slate py-5 px-3 relative">
         {navLinks.map((link) => (
           <NavLink
             key={link.title}
