@@ -34,7 +34,7 @@ const Project= () => {
 
       tags: [],
       deadline: "",
-      status: ""
+      status: "To Do | In Progress | Completed| Review",
     };
 
     setProjects((prevProjects) => {

@@ -36,7 +36,7 @@ const TaskBoard = () => {
       deadline,
       priority,
       tags: [],
-      status: ""
+      status: "To Do | In Progress | Completed| Review",
     };
 
     setColumns((prevColumns) => {

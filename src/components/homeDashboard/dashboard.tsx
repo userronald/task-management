@@ -9,35 +9,77 @@ const HomeDashboard = () => {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [projects, setProjects] = useState<ITaskProjects []>([]);
 
-   useEffect(() => {
-     try {
-       const storedTasks = localStorage.getItem("tasks");
-       if (storedTasks) {
-         const parsedTasks = JSON.parse(storedTasks);
-         if (Array.isArray(parsedTasks)) {
-           setTasks(parsedTasks);
-         } else {
-           console.error("Invalid tasks data in localStorage");
-         }
-       }
-     } catch (error) {
-       console.error("Error parsing tasks from localStorage:", error);
-     }
+  useEffect(() => {
+    try {
+      const storedTasks = localStorage.getItem("tasks");
+      if (storedTasks) {
+        const parsedTasks = JSON.parse(storedTasks);
 
-     try {
-       const storedProjects = localStorage.getItem("projects");
-       if (storedProjects) {
-         const parsedProjects = JSON.parse(storedProjects);
-         if (Array.isArray(parsedProjects)) {
-           setProjects(parsedProjects);
-         } else {
-           console.error("Invalid projects data in localStorage");
-         }
-       }
-     } catch (error) {
-       console.error("Error parsing projects from localStorage:", error);
-     }
-   }, []);
+        if (parsedTasks && typeof parsedTasks === "object") {
+          const allTasks: ITask[] = [
+            ...parsedTasks.todo.items.map((task: ITask) => ({
+              ...task,
+              status: "To Do",
+            })),
+            ...parsedTasks.inProgress.items.map((task: ITask) => ({
+              ...task,
+              status: "In Progress",
+            })),
+            ...parsedTasks.completed.items.map((task: ITask) => ({
+              ...task,
+              status: "Completed",
+            })),
+            ...parsedTasks.review.items.map((task: ITask) => ({
+              ...task,
+              status: "Review",
+            })),
+          ];
+          setTasks(allTasks);
+        } else {
+          console.error("Invalid tasks structure in localStorage");
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing tasks from localStorage:", error);
+    }
+
+    try {
+      const storedProjects = localStorage.getItem("projects");
+      if (storedProjects) {
+        const parsedProjects = JSON.parse(storedProjects);
+
+        if (parsedProjects && typeof parsedProjects === "object") {
+          const allProjects: ITaskProjects[] = [
+            ...parsedProjects.todo.items.map((project: ITaskProjects) => ({
+              ...project,
+              status: "To Do",
+            })),
+            ...parsedProjects.inProgress.items.map(
+              (project: ITaskProjects) => ({
+                ...project,
+                status: "In Progress",
+              })
+            ),
+            ...parsedProjects.completed.items.map((project: ITaskProjects) => ({
+              ...project,
+              status: "Completed",
+            })),
+            ...parsedProjects.review.items.map((project: ITaskProjects) => ({
+              ...project,
+              status: "Review",
+            })),
+          ];
+          setProjects(allProjects);
+        } else {
+          console.error("Invalid projects structure in localStorage");
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing projects from localStorage:", error);
+    }
+  }, []);
+
+
 
   const pendingTasks = tasks.filter((task) => task.status === "To Do").length;
   const inProgressTasks = tasks.filter((task) => task.status === "In Progress").length;
