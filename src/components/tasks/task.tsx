@@ -165,7 +165,6 @@ const TaskBoard = () => {
 
       <button
         onClick={() => {
-         
           setShowForm(true);
           setEditTaskId(null);
           setFormData(null);
@@ -185,64 +184,69 @@ const TaskBoard = () => {
         />
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 p-4">
         {Object.keys(columns).map((columnKey) => {
           const column = columns[columnKey as keyof typeof columns];
 
           return (
             <Droppable key={columnKey} id={columnKey}>
-              <div className="h-[300px] w-[230px] p-2 border rounded-md">
-                <h3 className="font-bold">{column.title}</h3>
+              <div className="outline-none h-[300px] w-[230px] rounded-md p-0 ">
+                <h3 className="font-bold text-center">{column.title}</h3>
 
-                <SortableContext items={column.items.map((task) => task.id)}>
-                  <ul className="task-list mt-4 ">
-                    {column.items.map((task) => (
-                      <li
-                        key={task.id}
-                        className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10 w-[200px]"
-                        onClick={() => viewTask(task)}
-                      >
-                        <Draggable id={task.id}>
-                          <div>
-                            <h2 className="font-semibold">{task.title}</h2>
-                            <p className="truncate w-full block overflow-hidden whitespace-nowrap text-ellipsis">
-                              {task.description}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {task.priority}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {task.deadline}
-                            </p>
-                          </div>
-                        </Draggable>
-
-                        {/* Fix: Click handlers should work properly now */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation(); // stops triggering the modal popup while clicking this edit button
-                            console.log("Edit task clicked", task.id); // Log the task ID
-                            handleEditTask(task);
-                          }}
-                          className="text-blue-500 hover:underline"
+                <div
+                  className={`mt-2 flex-1 overflow-y-auto overflow-x-hidden`}
+                  style={{ maxHeight: "260px" }} // Ensure scroll appears only when needed
+                >
+                  <SortableContext items={column.items.map((task) => task.id)}>
+                    <ul className="task-list mt-4 ">
+                      {column.items.map((task) => (
+                        <li
+                          key={task.id}
+                          className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10 w-[200px]"
+                          onClick={() => viewTask(task)}
                         >
-                          Edit
-                        </button>
+                          <Draggable id={task.id}>
+                            <div>
+                              <h2 className="font-semibold">{task.title}</h2>
+                              <p className="truncate w-full block overflow-hidden whitespace-nowrap text-ellipsis">
+                                {task.description}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {task.priority}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {task.deadline}
+                              </p>
+                            </div>
+                          </Draggable>
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation(); // stops triggering the modal popup when this delete button is clicked
-                            console.log("Delete task clicked", task.id); // Log the task ID
-                            handleDeleteTask(task.id);
-                          }}
-                          className="text-red-500 hover:underline ml-2"
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </SortableContext>
+                          {/* Fix: Click handlers should work properly now */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // stops triggering the modal popup while clicking this edit button
+                              console.log("Edit task clicked", task.id); // Log the task ID
+                              handleEditTask(task);
+                            }}
+                            className="text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // stops triggering the modal popup when this delete button is clicked
+                              console.log("Delete task clicked", task.id); // Log the task ID
+                              handleDeleteTask(task.id);
+                            }}
+                            className="text-red-500 hover:underline ml-2"
+                          >
+                            Delete
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </SortableContext>
+                </div>
               </div>
             </Droppable>
           );

@@ -73,7 +73,7 @@ const Form =({
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="px-3 py-2 h-64 bg-black rounded-lg border border-gray-500 focus:border-orange-500 focus:outline-none"
+                className="px-3 py-2 h-32 bg-black rounded-lg border border-gray-500 focus:border-orange-500 focus:outline-none"
               ></textarea>
             </div>
 
