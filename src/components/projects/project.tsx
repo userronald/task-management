@@ -6,6 +6,7 @@ import { Droppable } from "../../droppable";
 import { ITaskProjects } from "../../types/projects";
 import ProjectForm from "../forms/projectForm";
 import { v4 as uuidv4 } from "uuid";
+import { IoPencilOutline, IoTrashOutline, IoEyeOutline } from "react-icons/io5";
 
 const Project= () => {
   const [showProjectForm, setShowProjectForm] = useState(false);
@@ -182,57 +183,74 @@ const Project= () => {
 
           return (
             <Droppable key={projectKey} id={projectKey}>
-              <div className="h-[300px] w-[230px] p-2 border rounded-md">
+              <div className="outline-none h-[300px] w-[250px] rounded-md p-0 ">
                 <h3 className="font-bold">{project.title}</h3>
 
-                <SortableContext
-                  items={project.items.map((project) => project.id)}
+                <div
+                  className={`mt-2 flex-1 overflow-y-auto overflow-x-hidden`}
+                  style={{ maxHeight: "260px" }} // Ensure scroll appears only when needed
                 >
-                  <ul className="task-list mt-4">
-                    {project.items.map((project) => (
-                      <li
-                        key={project.id}
-                        className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10"
-                      >
+                  <SortableContext
+                    items={project.items.map((project) => project.id)}
+                  >
+                    <ul className="task-list mt-4 justify-items-center">
+                      {project.items.map((project) => (
                         <Draggable id={project.id}>
-                          <div>
-                            <h2 className="font-semibold">
-                              {project.projectTitle}
-                            </h2>
-                            <p>{project.requirements}</p>
-                            <p className="text-sm text-gray-500">
-                              {project.members}
-                            </p>
-                            {/* <p className="text-xs text-gray-400">
+                          <li
+                            key={project.id}
+                            className="border border-gray-300 rounded-lg p-2 shadow-sm cursor-pointer z-10 w-[200px]"
+                          >
+                            <div>
+                              <h2 className="font-semibold">
+                                {project.projectTitle}
+                              </h2>
+                              <p>{project.requirements}</p>
+                              <p className="text-sm text-gray-500">
+                                {project.members}
+                              </p>
+                              {/* <p className="text-xs text-gray-400">
                               {task.deadline}
                             </p> */}
-                          </div>
+                            </div>
+                            <div className="flex justify-between items-center mt-2">
+                              <div className="flex space-x-2">
+                                {/* Fix: Click handlers should work properly now */}
+                                <button
+                                  onClick={() => {
+                                    console.log(
+                                      "Edit task clicked",
+                                      project.id
+                                    ); // Log the task ID
+                                    handleEditProject(project);
+                                  }}
+                                  className="text-blue-500 hover:underline"
+                                >
+                                  <IoPencilOutline />
+                                </button>
+
+                                <button
+                                  onClick={() => {
+                                    console.log(
+                                      "Delete task clicked",
+                                      project.id
+                                    ); // Log the task ID
+                                    handleDeleteProject(project.id);
+                                  }}
+                                  className="text-red-500 hover:underline ml-2"
+                                >
+                                  <IoTrashOutline />
+                                </button>
+                              </div>
+                              <div>
+                                <IoEyeOutline />
+                              </div>
+                            </div>
+                          </li>
                         </Draggable>
-
-                        {/* Fix: Click handlers should work properly now */}
-                        <button
-                          onClick={() => {
-                            console.log("Edit task clicked", project.id); // Log the task ID
-                            handleEditProject(project);
-                          }}
-                          className="text-blue-500 hover:underline"
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            console.log("Delete task clicked", project.id); // Log the task ID
-                            handleDeleteProject(project.id);
-                          }}
-                          className="text-red-500 hover:underline ml-2"
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </SortableContext>
+                      ))}
+                    </ul>
+                  </SortableContext>
+                </div>
               </div>
             </Droppable>
           );

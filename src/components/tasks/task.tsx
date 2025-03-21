@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import { DndContext, closestCorners,PointerSensor,useSensor,useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { Draggable } from "../../draggable";
 import { Droppable } from "../../droppable";
@@ -7,6 +7,7 @@ import { ITask } from "../../types";
 import Form from "../forms/form";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "../../modal";
+import { IoPencilOutline, IoTrashOutline, IoEyeOutline } from "react-icons/io5";
 
 
 const TaskBoard = () => {
@@ -107,6 +108,17 @@ const TaskBoard = () => {
     localStorage.setItem("tasks", JSON.stringify(columns));
   }, [columns]);
 
+// function for drag and drop in mobile deveice
+
+const sensors= useSensors(
+  useSensor(PointerSensor,{
+    activationConstraint:{
+      distance:5,
+    }
+  })
+)
+
+
   // Handle Drag and Drop
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
@@ -160,7 +172,7 @@ const TaskBoard = () => {
   };
 
   return (
-    <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
       <h1>Task Management</h1>
 
       <button
@@ -190,7 +202,7 @@ const TaskBoard = () => {
 
           return (
             <Droppable key={columnKey} id={columnKey}>
-              <div className="outline-none h-[300px] w-[230px] rounded-md p-0 ">
+              <div className="outline-none h-[300px] w-[250px] rounded-md p-0  ">
                 <h3 className="font-bold text-center">{column.title}</h3>
 
                 <div
@@ -198,14 +210,17 @@ const TaskBoard = () => {
                   style={{ maxHeight: "260px" }} // Ensure scroll appears only when needed
                 >
                   <SortableContext items={column.items.map((task) => task.id)}>
-                    <ul className="task-list mt-4 ">
+                    <ul
+                      className="task-list mt-4 justify-items-center
+"
+                    >
                       {column.items.map((task) => (
-                        <li
-                          key={task.id}
-                          className="border border-solid rounded-lg p-2 border-orange-500 cursor-pointer z-10 w-[200px]"
-                          onClick={() => viewTask(task)}
-                        >
-                          <Draggable id={task.id}>
+                        <Draggable id={task.id}>
+                          <li
+                            key={task.id}
+                            className="border border-gray-300 rounded-lg p-2 shadow-sm cursor-pointer z-10 w-[200px]"
+                            onClick={() => viewTask(task)}
+                          >
                             <div>
                               <h2 className="font-semibold">{task.title}</h2>
                               <p className="truncate w-full block overflow-hidden whitespace-nowrap text-ellipsis">
@@ -218,31 +233,40 @@ const TaskBoard = () => {
                                 {task.deadline}
                               </p>
                             </div>
-                          </Draggable>
 
-                          {/* Fix: Click handlers should work properly now */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // stops triggering the modal popup while clicking this edit button
-                              console.log("Edit task clicked", task.id); // Log the task ID
-                              handleEditTask(task);
-                            }}
-                            className="text-blue-500 hover:underline"
-                          >
-                            Edit
-                          </button>
+                            {/* Icons container */}
+                            <div className="flex justify-between items-center mt-2">
+                              {/* Left side: Edit and Delete icons */}
+                              <div className="flex space-x-2">
+                                {/* Fix: Click handlers should work properly now */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // stops triggering the modal popup while clicking this edit button
+                                    console.log("Edit task clicked", task.id); // Log the task ID
+                                    handleEditTask(task);
+                                  }}
+                                  className="text-blue-500 hover:underline"
+                                >
+                                  <IoPencilOutline />
+                                </button>
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // stops triggering the modal popup when this delete button is clicked
-                              console.log("Delete task clicked", task.id); // Log the task ID
-                              handleDeleteTask(task.id);
-                            }}
-                            className="text-red-500 hover:underline ml-2"
-                          >
-                            Delete
-                          </button>
-                        </li>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // stops triggering the modal popup when this delete button is clicked
+                                    console.log("Delete task clicked", task.id); // Log the task ID
+                                    handleDeleteTask(task.id);
+                                  }}
+                                  className="text-red-500 hover:underline ml-2"
+                                >
+                                  <IoTrashOutline />
+                                </button>
+                              </div>
+                              <div>
+                                <IoEyeOutline />
+                              </div>
+                            </div>
+                          </li>
+                        </Draggable>
                       ))}
                     </ul>
                   </SortableContext>
